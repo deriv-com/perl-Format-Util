@@ -8,7 +8,7 @@ WriteMakefile(
     AUTHOR           => q{binary.com <rakesh@binary.com>},
     VERSION_FROM     => 'lib/Format/Util.pm',
     ABSTRACT_FROM    => 'lib/Format/Util.pm',
-    LICENSE          => 'Artistic_2_0',
+    LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
     CONFIGURE_REQUIRES => {
