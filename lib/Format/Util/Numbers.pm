@@ -242,7 +242,7 @@ sub financialrounding {
     return $x;
 }
 
-=head2
+=head2 roundeven
 
 This sub rounds number as per precision passed, this sub
 should be used for numbers not related to currencies like
