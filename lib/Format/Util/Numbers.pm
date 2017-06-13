@@ -5,7 +5,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use base 'Exporter';
-our @EXPORT_OK = qw/commas to_monetary_number_format roundnear financialrounding formatnumber/;
+our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundeven financialrounding formatnumber/;
 
 use Carp qw(cluck);
 use Scalar::Util qw(looks_like_number);
@@ -237,6 +237,61 @@ sub financialrounding {
     $x = $x->numify();
 
     # set back to origianl mode
+    Math::BigFloat->round_mode($current_mode);
+
+    return $x;
+}
+
+=head2
+
+This sub rounds number as per precision passed, this sub
+should be used for numbers not related to currencies like
+probabilities, percentages etc
+
+This sub use round up to even technique
+
+Acceptable precision values format example:
+
+0
+1
+1e-4
+0.0001
+
+This sub only supports rounding to one tenths, hundredths,
+thousandths and so on. It does not support rounding to two,
+three tenths, hundredths or so, use roundnear for that.
+
+This sub is created as replacement for roundnear as roundnear
+for small numbers it does round away from zero,
+for numbers with more significant digits it's sort-of random
+
+Returns number
+
+    roundeven(0.01, 10.234) => 10.23
+
+=cut
+
+sub roundeven {
+    my ($precision, $val) = @_;
+
+    return $val
+        if ((
+            not defined $val
+            or $val !~ $floating_point_regex
+        )
+        or (not defined $precision or $precision !~ /^(?:1(?:[eE][-]?[0-9])?|0(?:\.0+1)?)$/ or $precision == 0));
+
+    # get the number of decimal places needed by BigFloat
+    $precision = log(1 / $precision) / log(10);
+
+    # get the current global mode
+    my $current_mode = Math::BigFloat->round_mode();
+    Math::BigFloat->round_mode('even');
+
+    my $x = Math::BigFloat->new($val)->bfround("-$precision");
+    $x = $x->numify();
+
+    # set back to original mode
     Math::BigFloat->round_mode($current_mode);
 
     return $x;
