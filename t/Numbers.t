@@ -17,14 +17,14 @@ subtest 'roundnear' => sub {
 };
 
 subtest 'roundeven' => sub {
-    is(roundeven(0,     345.56789), 345.56789, 'No rounding is correct.');
-    is(roundeven(1,     345.56789), 346,       'Ones is correct.');
-    is(roundeven(0.01,  345.56789), 345.57,    'Hundredths rounding is correct.');
-    is(roundeven(0.02,  345.56789), 345.56789, 'Two hundredths rounding is not supported.');
-    is(roundeven(10,    345.56789), 345.56789, 'Rounding supported till 10 digits.');
-    is(roundeven(0,     undef),     undef,     'Rounding undef yields undef.');
-    is(roundeven(1e-2,  10.456),    10.46,     'Rounding with exponential precision');
-    is(roundeven(-1e-2, 10.456),    10.456,    'incorrect precision returns same value back');
+    cmp_ok(roundeven(0,    345.56789), '==', 345.56789, 'No rounding is correct.');
+    cmp_ok(roundeven(1,    345.56789), '==', 346,       'Ones is correct.');
+    cmp_ok(roundeven(0.01, 345.56789), '==', 345.57,    'Hundredths rounding is correct.');
+    cmp_ok(roundeven(0.02, 345.56789), '==', 345.56789, 'Two hundredths rounding is not supported.');
+    cmp_ok(roundeven(10,   345.56789), '==', 345.56789, 'Rounding supported till 10 digits.');
+    is(roundeven(0, undef), undef, 'Rounding undef yields undef.');
+    cmp_ok(roundeven(1e-2,  10.456), '==', 10.46,  'Rounding with exponential precision');
+    cmp_ok(roundeven(-1e-2, 10.456), '==', 10.456, 'incorrect precision returns same value back');
 };
 
 subtest 'commas' => sub {
