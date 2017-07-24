@@ -78,13 +78,13 @@ subtest 'formatnumber' => sub {
     is formatnumber('amount', 'USD', -10.345), '-10.35', 'Changed the input number';
     is formatnumber('amount', 'USD', 10.344),  '10.34',  'trimmed the input number';
     is formatnumber('amount', 'EUR', 10.394),  '10.39',  'trimmed the input number';
-    is formatnumber('amount', 'JPY', 10.398),  '10.40',  'Changed the input number';
+    is formatnumber('amount', 'JPY', 10.398),  '10',  'Changed the input number';
     is formatnumber('amount', 'AUD', -10.398), '-10.40', 'Changed the input number';
 
     is formatnumber('amount', 'USD', 10),               '10.00',       'USD 10 -> 10.00';
     is formatnumber('amount', 'USD', 10.000001),        '10.00',       'USD 10.000001 -> 10.00';
     is formatnumber('amount', 'EUR', 10.000001),        '10.00',       'EUR 10.000001 -> 10.00';
-    is formatnumber('amount', 'JPY', 10.000001),        '10.00',       'JPY 10.000001 -> 10.00';
+    is formatnumber('amount', 'JPY', 10.000001),        '10',       'JPY 10.000001 -> 10';
     is formatnumber('amount', 'BTC', 10),               '10.00000000', 'BTC 10 -> 10.00000000';
     is formatnumber('amount', 'BTC', 10.000001),        '10.00000100', 'BTC 10.000001 -> 10.00000100';
     is formatnumber('amount', 'BTC', 10.0000000000001), '10.00000000', 'BTC 10.0000000000001 -> 10.00000000';
@@ -148,7 +148,7 @@ subtest 'precision' => sub {
     is $precisions->{amount}->{EUR}, '2', 'Correct amount precision for EUR';
     is $precisions->{amount}->{GBP}, '2', 'Correct amount precision for GBP';
     is $precisions->{amount}->{AUD}, '2', 'Correct amount precision for AUD';
-    is $precisions->{amount}->{JPY}, '2', 'Correct amount precision for JPY';
+    is $precisions->{amount}->{JPY}, '0', 'Correct amount precision for JPY';
     is $precisions->{amount}->{BTC}, '8', 'Correct amount precision for BTC';
     is $precisions->{amount}->{LTC}, '8', 'Correct amount precision for LTC';
     is $precisions->{amount}->{ETH}, '8', 'Correct amount precision for ETH';
