@@ -88,9 +88,9 @@ subtest 'formatnumber' => sub {
     is formatnumber('amount', 'BTC', 10),               '10.00000000', 'BTC 10 -> 10.00000000';
     is formatnumber('amount', 'BTC', 10.000001),        '10.00000100', 'BTC 10.000001 -> 10.00000100';
     is formatnumber('amount', 'BTC', 10.0000000000001), '10.00000000', 'BTC 10.0000000000001 -> 10.00000000';
-    is formatnumber('amount', 'ETH', 10),               '10.00000000', 'ETH 10 -> 10.00000000';
-    is formatnumber('amount', 'ETH', 10.000001),        '10.00000100', 'ETH 10.000001 -> 10.00000100';
-    is formatnumber('amount', 'ETH', 10.0000000000001), '10.00000000', 'ETH 10.0000000000001 -> 10.00000000';
+    is formatnumber('amount', 'ETH', 10),               '10.000000000000', 'ETH 10 -> 10.000000000000';
+    is formatnumber('amount', 'ETH', 10.000001),        '10.000001000000', 'ETH 10.000001 -> 10.000001000000';
+    is formatnumber('amount', 'ETH', 10.0000000000001), '10.000000000000', 'ETH 10.0000000000001 -> 10.000000000000';
 };
 
 subtest 'financialrounding' => sub {
@@ -119,7 +119,7 @@ subtest 'financialrounding' => sub {
     cmp_ok financialrounding('amount', 'ETH', 10),               '==', 10,        'ETH 10 -> 10.00000000';
     cmp_ok financialrounding('amount', 'ETH', 10.000001),        '==', 10.000001, 'ETH 10.000001 -> 10.00000100';
     cmp_ok financialrounding('amount', 'ETH', 10.0000000000001), '==', 10,        'ETH 10.0000000000001 -> 10.00000000';
-    cmp_ok financialrounding('amount', 'ETH', 0.0000000650001),  '==', 0.00000007,
+    cmp_ok financialrounding('amount', 'ETH', 0.0000000650001),  '==', 0.000000065000,
         'ETH 0.000000065 -> 0.00000007 changed the number to higher value, need to be careful with this';
     cmp_ok(financialrounding('amount', 'USD', 0.025),  '==', 0.03,  'Correct rounding, round away from zero');
     cmp_ok(financialrounding('amount', 'USD', -0.025), '==', -0.03, 'Correct rounding, round away from zero');
@@ -151,8 +151,8 @@ subtest 'precision' => sub {
     is $precisions->{amount}->{JPY}, '2', 'Correct amount precision for JPY';
     is $precisions->{amount}->{BTC}, '8', 'Correct amount precision for BTC';
     is $precisions->{amount}->{LTC}, '8', 'Correct amount precision for LTC';
-    is $precisions->{amount}->{ETH}, '8', 'Correct amount precision for ETH';
-    is $precisions->{amount}->{ETC}, '8', 'Correct amount precision for ETC';
+    is $precisions->{amount}->{ETH}, '12', 'Correct amount precision for ETH';
+    is $precisions->{amount}->{ETC}, '12', 'Correct amount precision for ETC';
 
     is $precisions->{price}->{USD}, '2', 'Correct price precision for USD';
     is $precisions->{price}->{EUR}, '2', 'Correct price precision for EUR';
@@ -161,6 +161,6 @@ subtest 'precision' => sub {
     is $precisions->{price}->{JPY}, '0', 'Correct price precision for JPY';
     is $precisions->{price}->{BTC}, '8', 'Correct price precision for BTC';
     is $precisions->{price}->{LTC}, '8', 'Correct price precision for LTC';
-    is $precisions->{price}->{ETH}, '8', 'Correct price precision for ETH';
-    is $precisions->{price}->{ETC}, '8', 'Correct price precision for ETC';
+    is $precisions->{price}->{ETH}, '12', 'Correct price precision for ETH';
+    is $precisions->{price}->{ETC}, '12', 'Correct price precision for ETC';
 };

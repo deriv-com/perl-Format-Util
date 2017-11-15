@@ -7,8 +7,8 @@ price:
   BTC: 8
   BCH: 8
   LTC: 8
-  ETH: 8
-  ETC: 8
+  ETH: 12
+  ETC: 12
 amount:
   USD: 2
   EUR: 2
@@ -18,5 +18,5 @@ amount:
   BTC: 8
   BCH: 8
   LTC: 8
-  ETH: 8
-  ETC: 8
+  ETH: 12
+  ETC: 12
