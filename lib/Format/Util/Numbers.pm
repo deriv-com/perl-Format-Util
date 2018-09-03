@@ -322,12 +322,11 @@ sub _round_to_precison {
     Math::BigFloat->round_mode('common');
 
     my $x = Math::BigFloat->new($val)->bfround('-' . $precision);
-    $x = $x->numify();
 
     # set back to origianl mode
     Math::BigFloat->round_mode($current_mode);
 
-    return $x;
+    return $x->bstr();
 }
 
 =head1 AUTHOR
