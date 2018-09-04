@@ -211,9 +211,9 @@ currency.
 this subs takes precision defined per currency in config file passed by
 ENV{FORMAT_UTIL_PRECISION}, else it defaults to precision.yml
 
-Returns number
+Returns string
 
-    financialrounding('amount', 'USD', 10.345) => 10.35
+    financialrounding('amount', 'USD', 10.345) => '10.35'
 
 =cut
 
@@ -257,9 +257,9 @@ This sub is created as replacement for roundnear as roundnear
 for small numbers it does round away from zero,
 for numbers with more significant digits it's sort-of random
 
-Returns number
+Returns string
 
-    roundcommon(0.01, 10.234) => 10.23
+    roundcommon(0.01, 10.234) => '10.23'
 
 =cut
 
@@ -321,12 +321,12 @@ sub _round_to_precison {
     my $current_mode = Math::BigFloat->round_mode();
     Math::BigFloat->round_mode('common');
 
-    my $x = Math::BigFloat->new($val)->bfround('-' . $precision);
+    my $x = Math::BigFloat->new($val)->bfround('-' . $precision)->bstr();
 
     # set back to origianl mode
     Math::BigFloat->round_mode($current_mode);
 
-    return $x->bstr();
+    return $x;
 }
 
 =head1 AUTHOR
