@@ -316,17 +316,12 @@ sub get_min_unit {
 # common sub used by roundcommon and financialrounding
 sub _round_to_precison {
     my ($precision, $val) = @_;
-
-    # get current global mode
-    my $current_mode = Math::BigFloat->round_mode();
-    Math::BigFloat->round_mode('common');
-
-    my $x = Math::BigFloat->new($val)->bfround('-' . $precision)->bstr();
-
-    # set back to origianl mode
-    Math::BigFloat->round_mode($current_mode);
-
-    return $x;
+    
+    my $x = Math::BigFloat->bzero();
+    $x->round_mode('common');
+    $x->badd($val)->bfround('-' . $precision);
+    
+    return $x->bstr();
 }
 
 =head1 AUTHOR
