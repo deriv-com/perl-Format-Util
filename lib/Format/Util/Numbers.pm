@@ -318,8 +318,7 @@ sub _round_to_precison {
     my ($precision, $val) = @_;
     
     my $x = Math::BigFloat->bzero();
-    $x->round_mode('common');
-    $x->badd($val)->bfround('-' . $precision);
+    $x->badd($val)->bfround('-' . $precision, 'common');
     
     return $x->bstr();
 }
