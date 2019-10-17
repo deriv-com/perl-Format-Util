@@ -5,7 +5,6 @@ price:
   GBP: 2
   JPY: 0
   BTC: 8
-  BCH: 8
   LTC: 8
   ETH: 8
   ETC: 8
@@ -18,7 +17,6 @@ amount:
   GBP: 2
   JPY: 2
   BTC: 8
-  BCH: 8
   LTC: 8
   ETH: 8
   ETC: 8
