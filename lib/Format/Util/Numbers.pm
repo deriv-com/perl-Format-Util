@@ -5,7 +5,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use base 'Exporter';
-our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon financialrounding formatnumber get_min_unit/;
+our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon financialrounding formatnumber formatnumber_withoutrounding get_min_unit/;
 
 use Carp qw(cluck);
 use Scalar::Util qw(looks_like_number);
@@ -145,6 +145,46 @@ sub to_monetary_number_format {
     }
 
     return $text;
+}
+
+=head2 formatnumber_withoutrounding
+
+This sub is used to format number as per precision defined
+per currency without any rounding.
+
+DON'T USE THIS FOR CALCULATION, COMPARISON OF NUMBERS
+DON'T USE THIS FOR QUANTITATIVE ANALYSIS
+
+This sub accepts type i.e whether its price or amount
+- price e.g. ask price, bid price
+- amount e.g. balance, deposit/withdraw amount
+
+and takes currency to calculate precision defined per
+currency.
+
+this subs takes precision defined per currency in config file passed by
+ENV{FORMAT_UTIL_PRECISION}, else it defaults to precision.yml
+
+Returns string
+
+    formatnumber_withoutrounding('price', 'ETH', 1.123456789) => 1.12345678
+
+=cut
+
+sub formatnumber_withoutrounding {
+    my ($type, $currency, $val) = @_;
+
+    # return val if any one of value, currency or type is invalid
+    return $val
+        if ((
+            not defined $val
+            or $val !~ $floating_point_regex
+        )
+        or not defined $precisions->{$type // 'unknown-type'}
+        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
+    # truncate the number before formating
+    $val = int($val * 10**$precisions->{$type}->{$currency}) / 10**$precisions->{$type}->{$currency};
+    return sprintf('%0.0' . $precisions->{$type}->{$currency} . 'f', $val);
 }
 
 =head2 formatnumber
