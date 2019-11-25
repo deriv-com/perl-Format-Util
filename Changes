@@ -1,6 +1,7 @@
 Revision history for Format-Util
 
 {{$NEXT}}
+    update the precision.yml file and the formatnumber function to support formatting large numbers
 
 0.15      2018-09-10 02:01:10+00:00 UTC
     return as string for consistent precision
