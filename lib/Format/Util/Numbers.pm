@@ -185,9 +185,13 @@ sub formatnumber {
             or $val !~ $floating_point_regex
         )
         or not defined $precisions->{$type // 'unknown-type'}
-        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
-
-    return sprintf('%0.0' . $precisions->{$type}->{$currency} . 'f', $val);
+        or not defined $precisions->{$type}->{$currency // 'unknown-type'}
+        or $precisions->{$type}->{$currency} == 0);
+    
+    # Round the value before formating
+    $val = financialrounding($type, $currency, $val);
+    Math::BigFloat->accuracy($precisions->{$type}->{$currency} + 2); # add 2 because Math::BigFloat->accuracy see passed value -2
+    return Math::BigFloat->new($val)->bstr();
 }
 
 =head2 financialrounding
