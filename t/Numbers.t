@@ -75,7 +75,7 @@ subtest 'formatnumber' => sub {
     is formatnumber('amount',  'FOO', 10),    '10',  'invalid currency type sends back the same value';
 
     is formatnumber('amount', 'USD', 10.345),  '10.35',  'Changed the input number';
-    is formatnumber('amount', 'USD', -10.345), '-10.34', 'Changed the input number';
+    is formatnumber('amount', 'USD', -10.345), '-10.35', 'Changed the input number';
     is formatnumber('amount', 'USD', 10.344),  '10.34',  'trimmed the input number';
     is formatnumber('amount', 'EUR', 10.394),  '10.39',  'trimmed the input number';
     is formatnumber('amount', 'JPY', 10.398),  '10.40',  'Changed the input number';

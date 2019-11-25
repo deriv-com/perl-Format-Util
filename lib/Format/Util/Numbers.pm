@@ -190,8 +190,16 @@ sub formatnumber {
     
     # Round the value before formating
     $val = financialrounding($type, $currency, $val);
-    Math::BigFloat->accuracy($precisions->{$type}->{$currency} + 2); # add 2 because Math::BigFloat->accuracy see passed value -2
-    return Math::BigFloat->new($val)->bstr();
+    
+    # Convert the value to Math::BigFloat object
+    $val = Math::BigFloat->new($val);
+    
+    # Get the all value length and the fraction part length
+    my ($lenght_of_number, $length_of_fraction) = $val->length();
+    
+    # Set the accuracy. Knowing that, the accuracy here is for value length, mean it for fraction part and non fraction part togther.
+    $val->accuracy($precisions->{$type}->{$currency} + $lenght_of_number - $length_of_fraction);
+    return $val->bstr();
 }
 
 =head2 financialrounding
