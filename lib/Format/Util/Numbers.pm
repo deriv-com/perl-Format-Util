@@ -198,7 +198,7 @@ sub formatnumber {
     my ($lenght_of_number, $length_of_fraction) = $val->length();
     
     # Set the accuracy. Knowing that, the accuracy here is for value length, mean it for fraction part and non fraction part togther.
-    $val->accuracy($precisions->{$type}->{$currency} + $lenght_of_number - $length_of_fraction);
+    $val->accuracy($precisions->{$type}->{$currency} + $lenght_of_number - ($length_of_fraction // 0));
     return $val->bstr();
 }
 
