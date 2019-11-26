@@ -185,8 +185,7 @@ sub formatnumber {
             or $val !~ $floating_point_regex
         )
         or not defined $precisions->{$type // 'unknown-type'}
-        or not defined $precisions->{$type}->{$currency // 'unknown-type'}
-        or $precisions->{$type}->{$currency} == 0);
+        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
     
     return roundcommon(1/10**$precisions->{$type}->{$currency},$val);
 }
