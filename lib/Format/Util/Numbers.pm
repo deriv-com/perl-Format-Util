@@ -188,18 +188,7 @@ sub formatnumber {
         or not defined $precisions->{$type}->{$currency // 'unknown-type'}
         or $precisions->{$type}->{$currency} == 0);
     
-    # Round the value before formating
-    $val = financialrounding($type, $currency, $val);
-    
-    # Convert the value to Math::BigFloat object
-    $val = Math::BigFloat->new($val);
-    
-    # Get the all value length and the fraction part length
-    my ($lenght_of_number, $length_of_fraction) = $val->length();
-    
-    # Set the accuracy. Knowing that, the accuracy here is for value length, mean it for fraction part and non fraction part togther.
-    $val->accuracy($precisions->{$type}->{$currency} + $lenght_of_number - ($length_of_fraction // 0));
-    return $val->bstr();
+    return roundcommon(1/10**$precisions->{$type}->{$currency},$val);
 }
 
 =head2 financialrounding
