@@ -150,8 +150,8 @@ subtest 'get_min_unit' => sub {
     is get_min_unit('JPY'), formatnumber('price', 'JPY', 1),          'Correct minimum unit for JPY';
     is get_min_unit('BTC'), formatnumber('price', 'BTC', 0.00000001), 'Correct minimum unit for BTC';
     is get_min_unit('LTC'), formatnumber('price', 'LTC', 0.00000001), 'Correct minimum unit for LTC';
-    is get_min_unit('ETH'), formatnumber('price', 'ETH', 0.000000000000000001), 'Correct minimum unit for ETH';
-    is get_min_unit('ETC'), formatnumber('price', 'ETC', 0.000000000000000001), 'Correct minimum unit for ETC';
+    is get_min_unit('ETH'), formatnumber('price', 'ETH', 0.00000001), 'Correct minimum unit for ETH';
+    is get_min_unit('ETC'), formatnumber('price', 'ETC', 0.00000001), 'Correct minimum unit for ETC';
     dies_ok { get_min_unit('nonexistent_currency') }, qr(Currency nonexistent_currency and/or its precision is not defined.), 'Incorrect currency';
 };
 
@@ -176,6 +176,6 @@ subtest 'precision' => sub {
     is $precisions->{price}->{JPY}, '0', 'Correct price precision for JPY';
     is $precisions->{price}->{BTC}, '8', 'Correct price precision for BTC';
     is $precisions->{price}->{LTC}, '8', 'Correct price precision for LTC';
-    is $precisions->{price}->{ETH}, '18', 'Correct price precision for ETH';
-    is $precisions->{price}->{ETC}, '18', 'Correct price precision for ETC';
+    is $precisions->{price}->{ETH}, '8', 'Correct price precision for ETH';
+    is $precisions->{price}->{ETC}, '8', 'Correct price precision for ETC';
 };
