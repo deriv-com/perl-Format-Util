@@ -184,10 +184,10 @@ sub formatnumber {
             not defined $val
             or $val !~ $floating_point_regex
         )
-        or not defined $precisions->{$type // 'unknown-type'}
-        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
-    
-    return roundcommon(1/10**$precisions->{$type}->{$currency},$val);
+        or not defined $precisions->{ $type // 'unknown-type' }
+        or not defined $precisions->{$type}->{ $currency // 'unknown-type' });
+
+    return roundcommon(1 / 10**$precisions->{$type}->{$currency}, $val);
 }
 
 =head2 financialrounding
@@ -226,8 +226,8 @@ sub financialrounding {
             not defined $val
             or $val !~ $floating_point_regex
         )
-        or not defined $precisions->{$type // 'unknown-type'}
-        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
+        or not defined $precisions->{ $type // 'unknown-type' }
+        or not defined $precisions->{$type}->{ $currency // 'unknown-type' });
 
     return _round_to_precison($precisions->{$type}->{$currency}, $val);
 }
@@ -305,7 +305,7 @@ sub get_min_unit {
 
     die "Currency $currency and/or its precision is not defined."
         if ((not defined $currency)
-        or not defined $precisions->{price}->{$currency // 'unknown-type'});
+        or not defined $precisions->{price}->{ $currency // 'unknown-type' });
 
     # For cases where the precision is 0, we return 1 as the smallest denomination
     return 1 if $precisions->{price}->{$currency} == 0;
@@ -316,10 +316,10 @@ sub get_min_unit {
 # common sub used by roundcommon and financialrounding
 sub _round_to_precison {
     my ($precision, $val) = @_;
-    
+
     my $x = Math::BigFloat->bzero();
     $x->badd($val)->bfround('-' . $precision, 'common');
-    
+
     return $x->bstr();
 }
 
