@@ -67,6 +67,7 @@ price:
   HRK: 2
   HTG: 2
   HUF: 2
+  IDK: 0
   IDR: 2
   ILS: 2
   INR: 2
@@ -241,6 +242,7 @@ amount:
   HRK: 2
   HTG: 2
   HUF: 2
+  IDK: 0
   IDR: 2
   ILS: 2
   INR: 2
