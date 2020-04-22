@@ -55,6 +55,7 @@ price:
   ETH: 8
   EUR: 2
   EURS: 2
+  eUSDT: 6
   FJD: 2
   FKP: 2
   GBP: 2
@@ -238,6 +239,7 @@ amount:
   ETH: 8
   EUR: 2
   EURS: 2
+  eUSDT: 6
   FJD: 2
   FKP: 2
   GBP: 2
