@@ -163,7 +163,7 @@ price:
   USD: 2
   USDC: 2
   USDK: 2
-  USDT: 2
+  UST: 2
   USN: 2
   UYI: 0
   UYU: 2
@@ -346,7 +346,7 @@ amount:
   USD: 2
   USDC: 2
   USDK: 2
-  USDT: 2
+  UST: 2
   USN: 2
   UYI: 2
   UYU: 2
