@@ -5,7 +5,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use base 'Exporter';
-our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon financialrounding formatnumber get_min_unit/;
+our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon roundtoprecision financialrounding formatnumber get_min_unit/;
 
 use Carp qw(cluck);
 use Scalar::Util qw(looks_like_number);
@@ -279,6 +279,24 @@ sub roundcommon {
     return _round_to_precison($precision, $val);
 }
 
+=head2 roundtoprecision
+      
+Identical to roundcommon but accepts number of decimal places required.
+      
+Returns string
+      
+    roundtoprecision(2, 10.234) => '10.23'
+      
+=cut
+      
+sub roundtoprecision {
+      
+    my ($n_decimal, $val) = @_;
+      
+    return _round_to_precison($n_decimal, $val);
+   
+}
+  
 =head2 get_precision_config
 
 This is used get complete currency precision config.
