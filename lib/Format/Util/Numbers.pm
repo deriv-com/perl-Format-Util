@@ -278,7 +278,7 @@ sub roundcommon {
 
     return _round_to_precison($precision, $val);
 }
-  
+
 =head2 get_precision_config
 
 This is used get complete currency precision config.
