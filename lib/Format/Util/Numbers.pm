@@ -7,12 +7,17 @@ use warnings FATAL => 'all';
 use base 'Exporter';
 our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon financialrounding formatnumber get_min_unit/;
 
-use Carp qw(cluck);
+use Carp qw(croak);
 use Scalar::Util qw(looks_like_number);
 use POSIX qw(ceil);
 use YAML::XS;
 use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
+use Math::Round;
+use Syntax::Keyword::Try;
+
+# Tuning the default half value - Check the documentations
+$Math::Round::half = 0.50000000008;
 
 =head1 NAME
 
@@ -71,7 +76,7 @@ Round a number near the precision of the supplied one.
 # format of precsion should be
 # TYPE:
 #   CURRENCY: PRECISION
-my $precisions = YAML::XS::LoadFile($ENV{FORMAT_UTIL_PRECISION} // File::ShareDir::dist_file('Format-Util', 'precision.yml'));
+my $precisions           = YAML::XS::LoadFile($ENV{FORMAT_UTIL_PRECISION} // File::ShareDir::dist_file('Format-Util', 'precision.yml'));
 my $floating_point_regex = qr/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
 
 =head2 commas
@@ -313,14 +318,34 @@ sub get_min_unit {
     return formatnumber('price', $currency, 1 / 10**($precisions->{price}->{$currency}));
 }
 
-# common sub used by roundcommon and financialrounding
+=head2 _round_to_precison
+
+Rounds the given value with the precision using L<Math::Round>
+Numbers are rounded toward infinity
+
+=over 4
+
+=item * C<precision> Precsion for rounding
+
+=item * C<val> Value to round
+
+=back
+
+Returns pip sized string for the value
+
+=cut
+
 sub _round_to_precison {
     my ($precision, $val) = @_;
 
-    my $x = Math::BigFloat->bzero();
-    $x->badd($val)->bfround('-' . $precision, 'common');
-
-    return $x->bstr();
+    try {
+        my $decimal_points = log(1 / $precision) / log(10);
+        $format = "%." . $decimal_points . "f";                   # "%.2f" for 0.01 pip_size
+        my $rounded = nearest($precision, $val);                  # Round to infinity
+        return sprintf($format, $rounded == 0 ? 0 : $rounded);    # Avoid negative zero
+    } catch ($e) {
+        cluck "Error occurred when rounding $val with $precision";
+    }
 }
 
 =head1 AUTHOR
