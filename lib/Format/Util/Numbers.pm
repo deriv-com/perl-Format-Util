@@ -7,9 +7,9 @@ use warnings FATAL => 'all';
 use base 'Exporter';
 our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon financialrounding formatnumber get_min_unit/;
 
-use Carp qw(croak);
+use Carp qw(cluck);
 use Scalar::Util qw(looks_like_number);
-use POSIX qw(ceil);
+use POSIX qw(ceil log10);
 use YAML::XS;
 use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
@@ -17,6 +17,7 @@ use Math::Round;
 use Syntax::Keyword::Try;
 
 # Tuning the default half value - Check the documentations
+# Default value is too small: nearest (0.0001, 3.97605) == 3.976
 $Math::Round::half = 0.50000000008;
 
 =head1 NAME
@@ -279,7 +280,7 @@ sub roundcommon {
         or (not defined $precision or $precision !~ /^(?:1(?:[eE][-]?[0-9]+)?|0(?:\.0*1)?)$/ or $precision == 0));
 
     # get the number of decimal places needed by BigFloat
-    $precision = log(1 / $precision) / log(10);
+    $precision = log10(1 / $precision);
 
     return _round_to_precison($precision, $val);
 }
@@ -322,10 +323,11 @@ sub get_min_unit {
 
 Rounds the given value with the precision using L<Math::Round>
 Numbers are rounded toward infinity
+Both values can be in scientific notation
 
 =over 4
 
-=item * C<precision> Precsion for rounding
+=item * C<decimal_points> Precsion for rounding
 
 =item * C<val> Value to round
 
@@ -336,10 +338,9 @@ Returns pip sized string for the value
 =cut
 
 sub _round_to_precison {
-    my ($precision, $val) = @_;
+    my ($decimal_points, $val) = @_;
 
     try {
-        my $decimal_points = log(1 / $precision) / log(10);
         $format = "%." . $decimal_points . "f";                   # "%.2f" for 0.01 pip_size
         my $rounded = nearest($precision, $val);                  # Round to infinity
         return sprintf($format, $rounded == 0 ? 0 : $rounded);    # Avoid negative zero
