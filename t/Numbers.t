@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Test::Exception;
 use Test::NoWarnings;
 
@@ -139,6 +139,18 @@ subtest 'regression' => sub {
     foreach my $i (-100 .. -1) {
         my $j = rand() * rand(-100000);
         cmp_ok(roundnear(1 / $i, $j), '<=', 0, 'roundnear runs for (' . 1 / $i . ',' . $j . ')');
+    }
+};
+
+subtest 'check numbers in range' => sub {
+    my $base = '3.9760';
+    for my $dec (0..499) {
+        my $num = sprintf("$base%03d", $dec);
+        cmp_ok(roundcommon(1e-4, $num), 'eq', '3.9760'); # eq to also check the padding
+    }
+    for my $dec (500..999) {
+        my $num = sprintf("$base%d", $dec);
+        cmp_ok(roundcommon(1e-4, $num), '==', 3.9761);
     }
 };
 
