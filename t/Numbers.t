@@ -144,11 +144,11 @@ subtest 'regression' => sub {
 
 subtest 'check numbers in range' => sub {
     my $base = '3.9760';
-    for my $dec (0..499) {
+    for my $dec (0 .. 499) {
         my $num = sprintf("$base%03d", $dec);
-        cmp_ok(roundcommon(1e-4, $num), 'eq', '3.9760'); # eq to also check the padding
+        cmp_ok(roundcommon(1e-4, $num), 'eq', '3.9760');    # eq to also check the padding
     }
-    for my $dec (500..999) {
+    for my $dec (500 .. 999) {
         my $num = sprintf("$base%d", $dec);
         cmp_ok(roundcommon(1e-4, $num), '==', 3.9761);
     }
