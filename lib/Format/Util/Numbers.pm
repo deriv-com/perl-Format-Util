@@ -341,11 +341,12 @@ sub _round_to_precison {
     my ($decimal_points, $val) = @_;
 
     try {
-        $format = "%." . $decimal_points . "f";                   # "%.2f" for 0.01 pip_size
-        my $rounded = nearest($precision, $val);                  # Round to infinity
+        die unless $decimal_points >= 0;
+        my $format = "%." . $decimal_points . "f";                # "%.2f" for 0.01 pip_size
+        my $rounded = nearest("1e-$decimal_points", $val);        # Round to infinity
         return sprintf($format, $rounded == 0 ? 0 : $rounded);    # Avoid negative zero
     } catch ($e) {
-        cluck "Error occurred when rounding $val with $precision";
+        cluck "Error occurred when rounding $val with $decimal_points";
     }
 }
 
