@@ -6,6 +6,7 @@ requires 'perl', '5.006';
 requires 'YAML::XS';
 requires 'File::ShareDir';
 requires 'Math::BigFloat';
+requires 'Math::Round';
 
 on configure => sub {
     requires 'ExtUtils::MakeMaker';
