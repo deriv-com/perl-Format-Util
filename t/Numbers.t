@@ -24,13 +24,13 @@ subtest 'roundcommon' => sub {
     cmp_ok(roundcommon(0.02, 345.56789), '==', 345.56789, 'Two hundredths rounding is not supported.');
     cmp_ok(roundcommon(10,   345.56789), '==', 345.56789, 'Not supported, only supported integer is 1');
     is(roundcommon(0, undef), undef, 'Rounding undef yields undef.');
-    cmp_ok(roundcommon(1e-2,  10.456),            '==', 10.46,         'Rounding with exponential precision');
-    cmp_ok(roundcommon(-1e-2, 10.456),            '==', 10.456,        'incorrect precision returns same value back');
-    cmp_ok(roundcommon(1e-10, 10.56783333331239), '==', 10.5678333333, 'Rounding with exponential precision');
-    cmp_ok(roundcommon(0.01,  0.025),             '==', 0.03,          'Correct rounding, round away from zero');
-    cmp_ok(roundcommon(0.01,  -0.025),            '==', -0.03,         'Correct rounding, round away from zero');
-    cmp_ok(roundcommon(0.001,  150.9065),         '==', 150.907,       'Correct rounding, handled floating point error');
-    cmp_ok(roundcommon(1e-18,  0.5),         'eq', '0.500000000000000000',       'Ambigious numbers are correctly rounded as string');
+    cmp_ok(roundcommon(1e-2,  10.456),            '==', 10.46,                  'Rounding with exponential precision');
+    cmp_ok(roundcommon(-1e-2, 10.456),            '==', 10.456,                 'incorrect precision returns same value back');
+    cmp_ok(roundcommon(1e-10, 10.56783333331239), '==', 10.5678333333,          'Rounding with exponential precision');
+    cmp_ok(roundcommon(0.01,  0.025),             '==', 0.03,                   'Correct rounding, round away from zero');
+    cmp_ok(roundcommon(0.01,  -0.025),            '==', -0.03,                  'Correct rounding, round away from zero');
+    cmp_ok(roundcommon(0.001, 150.9065),          '==', 150.907,                'Correct rounding, handled floating point error');
+    cmp_ok(roundcommon(1e-18, 0.5),               'eq', '0.500000000000000000', 'Ambigious numbers are correctly rounded as string');
 };
 
 subtest 'commas' => sub {
