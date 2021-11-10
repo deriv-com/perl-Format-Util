@@ -30,6 +30,7 @@ subtest 'roundcommon' => sub {
     cmp_ok(roundcommon(0.01,  0.025),             '==', 0.03,          'Correct rounding, round away from zero');
     cmp_ok(roundcommon(0.01,  -0.025),            '==', -0.03,         'Correct rounding, round away from zero');
     cmp_ok(roundcommon(0.001,  150.9065),         '==', 150.907,       'Correct rounding, handled floating point error');
+    cmp_ok(roundcommon(1e-18,  0.5),         'eq', '0.500000000000000000',       'Ambigious numbers are correctly rounded as string');
 };
 
 subtest 'commas' => sub {

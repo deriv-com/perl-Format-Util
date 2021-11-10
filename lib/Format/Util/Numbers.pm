@@ -343,8 +343,10 @@ sub _round_to_precison {
     try {
         die unless $decimal_points >= 0;
         my $format = "%." . $decimal_points . "f";                # "%.2f" for 0.01 pip_size
-        my $rounded = nearest("1e-$decimal_points", $val);        # Round to infinity
-        return sprintf($format, $rounded == 0 ? 0 : $rounded);    # Avoid negative zero
+        # Round to infinity and cast to string. Give sprintf a string rather than a number
+        # to avoid floating point errors in sprintf for ambigious numbers like 0.5
+        my $rounded = nearest("1e-$decimal_points", $val) . '';
+        return sprintf($format, $rounded);
     } catch ($e) {
         cluck "Error occurred when rounding $val with $decimal_points";
     }
