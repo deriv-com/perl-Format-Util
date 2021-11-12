@@ -327,7 +327,7 @@ Both values can be in scientific notation
 
 =over 4
 
-=item * C<decimal_points> Precsion for rounding
+=item * C<precision> Precsion for rounding
 
 =item * C<val> Value to round
 
@@ -338,18 +338,23 @@ Returns pip sized string for the value
 =cut
 
 sub _round_to_precison {
-    my ($decimal_points, $val) = @_;
+    my ($precision, $val) = @_;
 
-    try {
-        die unless $decimal_points >= 0;
-        my $format  = "%." . $decimal_points . "f";               # "%.2f" for 0.01 pip_size
-                                                                  # Round to infinity and cast to string. Give sprintf a string rather than a number
-                                                                  # to avoid floating point errors in sprintf for ambigious numbers like 0.5
-        my $rounded = nearest("1e-$decimal_points", $val) . '';
-        return sprintf($format, $rounded);
-    } catch ($e) {
-        cluck "Error occurred when rounding $val with $decimal_points";
+    die unless $precision >= 0;
+
+    if ($precision < 9) {
+        # perl with double-precision floats (nvsize=8) should be
+        # able to handle up to 15 digits
+        my $format  = "%." . $precision . "f";               # "%.2f" for 0.01 pip_size
+        my $rounded = nearest("1e-$precision", $val) . '';   # Cast to string for sprintf
+        return sprintf($format, $rounded); # No rounding occures here, only padding
     }
+
+    # If precision with more than 8 decimal points is requested, use BigFloat
+    # It's slower, but can handle bigger values (in crypto we ask for 18 points)
+    my $x = Math::BigFloat->bzero();
+    $x->badd($val)->bfround('-' . $precision, 'common');
+    return $x->bstr();
 }
 
 =head1 AUTHOR
