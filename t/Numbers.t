@@ -31,9 +31,10 @@ subtest 'roundcommon' => sub {
     cmp_ok(roundcommon(0.01,  -0.025),            '==', -0.03,                  'Correct rounding, round away from zero');
     cmp_ok(roundcommon(0.001, 150.9065),          '==', 150.907,                'Correct rounding, handled floating point error');
 
-    note 'Checke high precision and very small numbers';
+    note 'Checke high precision and very small numbers with BigFloat';
     cmp_ok(roundcommon(1e-18, "0.$_"), 'eq', "0.$_" . '00000000000000000', 'Numbers with big precision are correctly rounded as string') for (0..9);
     cmp_ok(roundcommon(1e-18, "0.00000000000000000$_"), 'eq', "0.00000000000000000$_", 'Very small numbers are correctly rounded as string') for (0..9);
+    cmp_ok(roundcommon(1e-8, "123456789.0000000$_"), 'eq', "123456789.0000000$_", 'aVery small numbers are correctly rounded as string') for (0..9);
 };
 
 subtest 'commas' => sub {
