@@ -24,17 +24,18 @@ subtest 'roundcommon' => sub {
     cmp_ok(roundcommon(0.02, 345.56789), '==', 345.56789, 'Two hundredths rounding is not supported.');
     cmp_ok(roundcommon(10,   345.56789), '==', 345.56789, 'Not supported, only supported integer is 1');
     is(roundcommon(0, undef), undef, 'Rounding undef yields undef.');
-    cmp_ok(roundcommon(1e-2,  10.456),            '==', 10.46,                  'Rounding with exponential precision');
-    cmp_ok(roundcommon(-1e-2, 10.456),            '==', 10.456,                 'incorrect precision returns same value back');
-    cmp_ok(roundcommon(1e-10, 10.56783333331239), '==', 10.5678333333,          'Rounding with exponential precision');
-    cmp_ok(roundcommon(0.01,  0.025),             '==', 0.03,                   'Correct rounding, round away from zero');
-    cmp_ok(roundcommon(0.01,  -0.025),            '==', -0.03,                  'Correct rounding, round away from zero');
-    cmp_ok(roundcommon(0.001, 150.9065),          '==', 150.907,                'Correct rounding, handled floating point error');
+    cmp_ok(roundcommon(1e-2,  10.456),            '==', 10.46,         'Rounding with exponential precision');
+    cmp_ok(roundcommon(-1e-2, 10.456),            '==', 10.456,        'incorrect precision returns same value back');
+    cmp_ok(roundcommon(1e-10, 10.56783333331239), '==', 10.5678333333, 'Rounding with exponential precision');
+    cmp_ok(roundcommon(0.01,  0.025),             '==', 0.03,          'Correct rounding, round away from zero');
+    cmp_ok(roundcommon(0.01,  -0.025),            '==', -0.03,         'Correct rounding, round away from zero');
+    cmp_ok(roundcommon(0.001, 150.9065),          '==', 150.907,       'Correct rounding, handled floating point error');
 
     note 'Checke high precision and very small numbers with BigFloat';
-    cmp_ok(roundcommon(1e-18, "0.$_"), 'eq', "0.$_" . '00000000000000000', 'Numbers with big precision are correctly rounded as string') for (0..9);
-    cmp_ok(roundcommon(1e-18, "0.00000000000000000$_"), 'eq', "0.00000000000000000$_", 'Very small numbers are correctly rounded as string') for (0..9);
-    cmp_ok(roundcommon(1e-8, "123456789.0000000$_"), 'eq', "123456789.0000000$_", 'aVery small numbers are correctly rounded as string') for (0..9);
+    cmp_ok(roundcommon(1e-18, "0.$_"), 'eq', "0.$_" . '00000000000000000', 'Numbers with big precision are correctly rounded as string') for (0 .. 9);
+    cmp_ok(roundcommon(1e-18, "0.00000000000000000$_"), 'eq', "0.00000000000000000$_", 'Very small numbers are correctly rounded as string')
+        for (0 .. 9);
+    cmp_ok(roundcommon(1e-8, "123456789.0000000$_"), 'eq', "123456789.0000000$_", 'aVery small numbers are correctly rounded as string') for (0 .. 9);
 };
 
 subtest 'commas' => sub {
@@ -44,10 +45,10 @@ subtest 'commas' => sub {
     is(commas(12345.6789, 3), '12,345.679',  '3 decimal commas is correct');
     is(commas(12345.6789, 4), '12,345.6789', '4 decimal commas is correct');
 
-    is(commas(12345.00, 0), '12,345',    '0 decimal commas is correct');
-    is(commas(12345,    0), '12,345',    '0 decimal commas is correct');
-    is(commas(1234567,  0), '1,234,567', 'integer value >1m is correct');
-    is(commas(1234567), '1,234,567', 'integer value >1m with no DP parameter is correct');
+    is(commas(12345.00, 0),   '12,345',       '0 decimal commas is correct');
+    is(commas(12345, 0),      '12,345',       '0 decimal commas is correct');
+    is(commas(1234567, 0),    '1,234,567',    'integer value >1m is correct');
+    is(commas(1234567),       '1,234,567',    'integer value >1m with no DP parameter is correct');
     is(commas(1234567.89, 2), '1,234,567.89', 'floating point value >1m is correct');
 
     is(commas('N/A',    4), 'N/A',        'Non-numeric commas returns same');
@@ -58,11 +59,11 @@ subtest 'commas' => sub {
 };
 
 subtest 'to_monetary_number_format' => sub {
-    is(to_monetary_number_format(undef),     '0.00',           'undef to_monetary_number_format is correct');
-    is(to_monetary_number_format('N/A'),     'N/A',            'nonnumeric to_monetary_number_format is correct');
-    is(to_monetary_number_format(123456789), '123,456,789.00', 'Integer to_monetary_number_format is correct');
+    is(to_monetary_number_format(undef),        '0.00',           'undef to_monetary_number_format is correct');
+    is(to_monetary_number_format('N/A'),        'N/A',            'nonnumeric to_monetary_number_format is correct');
+    is(to_monetary_number_format(123456789),    '123,456,789.00', 'Integer to_monetary_number_format is correct');
     is(to_monetary_number_format(123456789, 1), '123,456,789', 'Integer to_monetary_number_format is correct when requested to remove int decimals');
-    is(to_monetary_number_format(12345678.9), '12,345,678.90', 'One decimal to_monetary_number_format is correct');
+    is(to_monetary_number_format(12345678.9),   '12,345,678.90', 'One decimal to_monetary_number_format is correct');
     is(to_monetary_number_format(12345678.9, 1),
         '12,345,678.90', 'One decimal to_monetary_number_format is correct when requested to remove int decimals');
     is(to_monetary_number_format(1234567.89), '1,234,567.89', 'Two decimal to_monetary_number_format is correct');
@@ -137,7 +138,7 @@ subtest 'regression' => sub {
     foreach my $i (1 .. 100) {
         my $j = rand() * rand(100000);
         cmp_ok(roundnear(1 / $i, $j), '>=', 0, 'roundnear runs for (' . 1 / $i . ',' . $j . ')');
-        ok(commas($j, $i), 'commas runs for (' . $j . ',' . $i . ')');
+        ok(commas($j, $i),                'commas runs for (' . $j . ',' . $i . ')');
         ok(to_monetary_number_format($j), 'to_monetary_number_format runs for (' . $j . ')');
     }
 

@@ -344,10 +344,10 @@ sub _round_to_precison {
 
     # perl with double-precision floats (nvsize=8) should be
     # able to handle up to 15 digits
-    if (length (int $val) + $precision < 15) {
-        my $format  = "%." . $precision . "f";               # "%.2f" for 0.01 pip_size
-        my $rounded = nearest("1e-$precision", $val) . '';   # Cast to string for sprintf
-        return sprintf($format, $rounded); # No rounding occures here, only padding
+    if (length(int $val) + $precision < 15) {
+        my $format  = "%." . $precision . "f";                # "%.2f" for 0.01 pip_size
+        my $rounded = nearest("1e-$precision", $val) . '';    # Cast to string for sprintf
+        return sprintf($format, $rounded);                    # No rounding occures here, only padding
     }
 
     # For number that require more precision use BigFloat. It's way slower
