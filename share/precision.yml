@@ -1,5 +1,4 @@
 price:
-  AAD: 2
   AED: 2
   AFN: 2
   ALL: 2
@@ -183,7 +182,6 @@ price:
   ZMW: 2
   ZWL: 2
 amount:
-  AAD: 2
   AED: 2
   AFN: 2
   ALL: 2
