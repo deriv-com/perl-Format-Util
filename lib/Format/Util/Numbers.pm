@@ -14,7 +14,6 @@ use YAML::XS;
 use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
 use Math::Round;
-use Syntax::Keyword::Try;
 
 # Tuning the default half value - Check the documentations
 # Default value is too small: nearest (0.0001, 3.97605) == 3.976
@@ -321,9 +320,10 @@ sub get_min_unit {
 
 =head2 _round_to_precison
 
-Rounds the given value with the precision using L<Math::Round>
+Rounds the given value with the precision
+It will use L<Math::Round> for small precision values,
+and L<Math::BigFloat> for bigger precision values.
 Numbers are rounded toward infinity
-Both values can be in scientific notation
 
 =over 4
 
@@ -345,7 +345,7 @@ sub _round_to_precison {
     # perl with double-precision floats (nvsize=8) should be
     # able to handle up to 15 digits
     if (length(int $val) + $precision < 15) {
-        my $format  = "%." . $precision . "f";                # "%.2f" for 0.01 pip_size
+        my $format  = "%." . $precision . "f";                # "%.2f" for 2 precision
         my $rounded = nearest("1e-$precision", $val) . '';    # Cast to string for sprintf
         return sprintf($format, $rounded);                    # No rounding occures here, only padding
     }
@@ -353,6 +353,7 @@ sub _round_to_precison {
     # For number that require more precision use BigFloat. It's way slower
     my $x = Math::BigFloat->bzero();
     $x->badd($val)->bfround('-' . $precision, 'common');
+
     return $x->bstr();
 }
 
