@@ -15,9 +15,8 @@ use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
 use Math::Round;
 
-# Tuning the default half value - Check the documentations
-# Default value is too small: nearest (0.0001, 3.97605) == 3.976
-$Math::Round::half = 0.50000000008;
+# HALF value for rounding. Epsilon is added to avoid floating point errors
+use constant HALF => 0.5000000008;
 
 =head1 NAME
 
@@ -279,9 +278,9 @@ sub roundcommon {
         or (not defined $precision or $precision !~ /^(?:1(?:[eE][-]?[0-9]+)?|0(?:\.0*1)?)$/ or $precision == 0));
 
     # get the number of decimal places needed by BigFloat
-    $precision = log10(1 / $precision);
+    my $decimal_places = log10(1 / $precision);
 
-    return _round_to_precison($precision, $val);
+    return _round_to_precison($decimal_places, $val);
 }
 
 =head2 get_precision_config
@@ -320,14 +319,15 @@ sub get_min_unit {
 
 =head2 _round_to_precison
 
-Rounds the given value with the precision
-It will use L<Math::Round> for small precision values,
-and L<Math::BigFloat> for bigger precision values.
-Numbers are rounded toward infinity
+Rounds the given value up to C<decimal_places>
+For smaller values that fit into C<double> type,
+we'll calculate the rounded value here.
+L<Math::BigFloat> is used for bigger values.
+Numbers are rounded away from zero
 
 =over 4
 
-=item * C<precision> Precsion for rounding
+=item * C<decimal_places> Precsion for rounding
 
 =item * C<val> Value to round
 
@@ -338,21 +338,25 @@ Returns pip sized string for the value
 =cut
 
 sub _round_to_precison {
-    my ($precision, $val) = @_;
+    my ($decimal_places, $val) = @_;
 
-    die unless $precision >= 0;
+    die unless $decimal_places >= 0;
 
-    # perl with double-precision floats (nvsize=8) should be
+    # perl with double precision floats (nvsize=8) should be
     # able to handle up to 15 digits
-    if (length(int $val) + $precision < 15) {
-        my $format  = "%." . $precision . "f";                # "%.2f" for 2 precision
-        my $rounded = nearest("1e-$precision", $val) . '';    # Cast to string for sprintf
-        return sprintf($format, $rounded);                    # No rounding occures here, only padding
+    if ($decimal_places <= 8 && length(int $val) + $decimal_places < 14) {
+
+        my $rounded = $val >= 0
+            ? int (10 ** $decimal_places * $val + HALF) / 10 ** $decimal_places
+            : ceil(10 ** $decimal_places * $val - HALF) / 10 ** $decimal_places;
+
+        my $format  = "%." . $decimal_places . "f";
+        return sprintf($format, $rounded);       # No rounding occures here, only padding
     }
 
-    # For number that require more precision use BigFloat. It's way slower
+    # For number that require more decimal_places use BigFloat. It's way slower
     my $x = Math::BigFloat->bzero();
-    $x->badd($val)->bfround('-' . $precision, 'common');
+    $x->badd($val)->bfround('-' . $decimal_places, 'common');
 
     return $x->bstr();
 }
