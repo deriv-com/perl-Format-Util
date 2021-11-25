@@ -346,12 +346,13 @@ sub _round_to_precison {
     # able to handle up to 15 digits
     if ($decimal_places <= 8 && length(int $val) + $decimal_places < 14) {
 
-        my $rounded = $val >= 0
-            ? int (10 ** $decimal_places * $val + HALF) / 10 ** $decimal_places
-            : ceil(10 ** $decimal_places * $val - HALF) / 10 ** $decimal_places;
+        my $rounded =
+            $val >= 0
+            ? int(10**$decimal_places * $val + HALF) / 10**$decimal_places
+            : ceil(10**$decimal_places * $val - HALF) / 10**$decimal_places;
 
-        my $format  = "%." . $decimal_places . "f";
-        return sprintf($format, $rounded);       # No rounding occures here, only padding
+        my $format = "%." . $decimal_places . "f";
+        return sprintf($format, $rounded);    # No rounding occures here, only padding
     }
 
     # For number that require more decimal_places use BigFloat. It's way slower
