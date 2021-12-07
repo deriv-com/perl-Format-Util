@@ -156,7 +156,7 @@ subtest 'check numbers in range' => sub {
     }
     for my $dec (500 .. 999) {
         my $num = sprintf("$base%d", $dec);
-        cmp_ok(roundcommon(1e-4, $num), '==', 3.9761, "$num rounded correctly");
+        cmp_ok(roundcommon(1e-4, $num), 'eq', 3.9761, "$num rounded correctly");
     }
 };
 

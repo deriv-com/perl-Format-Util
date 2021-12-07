@@ -13,10 +13,6 @@ use POSIX qw(ceil log10);
 use YAML::XS;
 use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
-use Math::Round;
-
-# HALF value for rounding. Epsilon is added to avoid floating point errors
-use constant HALF => 0.5000000008;
 
 =head1 NAME
 
@@ -35,19 +31,22 @@ Format::Util::Numbers - Miscellaneous routines to do with manipulating number fo
 
 =head2 roundnear
 
-Round a number near the precision of the supplied one.
+(DEPRECATED) Round a number near the precision of the supplied one.
 
     roundnear( 0.01, 12345.678) => 12345.68
 
 =cut
 
 {
-    #cf. Math::Round
+    # cf. Math::Round
+    # https://github.com/psipred/MemSatSVM/blob/master/lib/Math/Round.pm
     my $halfdec = do {
         my $halfhex = unpack('H*', pack('d', 0.5));
         if (substr($halfhex, 0, 2) ne '00' && substr($halfhex, -2) eq '00') {
+            #--- It's big-endian.
             substr($halfhex, -4) = '1000';
         } else {
+            #--- It's little-endian.
             substr($halfhex, 0, 4) = '0010';
         }
         unpack('d', pack('H*', $halfhex));
@@ -342,15 +341,15 @@ sub _round_to_precison {
 
     die unless $decimal_places >= 0;
 
-    # perl with double precision floats (nvsize=8) should be
-    # able to handle up to 15 digits
-    if ($decimal_places <= 8 && length(int $val) + $decimal_places < 14) {
-
-        my $rounded =
-            $val >= 0
-            ? int(10**$decimal_places * $val + HALF) / 10**$decimal_places
-            : ceil(10**$decimal_places * $val - HALF) / 10**$decimal_places;
-
+    if ($decimal_places <= 6 # Smallest pip size value we have: 0.000001 for XRP
+        && length(int $val) + $decimal_places < 15 # In doubles we ca hold up to 15 digits
+    ) {
+        my $pow = 10 ** $decimal_places;
+        my ($real, $fraction) = split /\./, ($val * $pow);
+        if ($fraction && substr($fraction, 0, 1) >= 5) {
+            $real += $real > 0 ? 1 : -1; # Round away from zero
+        }
+        my $rounded = $real / $pow;
         my $format = "%." . $decimal_places . "f";
         return sprintf($format, $rounded);    # No rounding occures here, only padding
     }
