@@ -150,13 +150,36 @@ subtest 'regression' => sub {
 
 subtest 'check numbers in range' => sub {
     my $base = '3.9760';
+    my $are_equal = 0;
     for my $dec (0 .. 499) {
         my $num = sprintf("$base%03d", $dec);
-        cmp_ok(roundcommon(1e-4, $num), 'eq', '3.9760', "$num rounded correctly");    # eq to also check the padding
+        my $rounded = roundcommon(1e-4, $num);
+        $are_equal = $rounded eq '3.9760';
+        ok($are_equal, "$num rounded correctly: $rounded");
+        last unless $are_equal;
     }
     for my $dec (500 .. 999) {
         my $num = sprintf("$base%d", $dec);
-        cmp_ok(roundcommon(1e-4, $num), 'eq', 3.9761, "$num rounded correctly");
+        my $rounded = roundcommon(1e-4, $num);
+        $are_equal = $rounded eq '3.9761';
+        ok($are_equal, "$num rounded correctly: $rounded");
+        last unless $are_equal;
+    }
+
+    $base = 178568.0046;
+    for my $dec (0 .. 499) {
+        my $num = sprintf("$base%03d", $dec);
+        my $rounded = roundcommon(1e-4, $num);
+        $are_equal = $rounded eq '178568.0046';
+        ok($are_equal, "$num rounded correctly: $rounded");
+        last unless $are_equal;
+    }
+    for my $dec (500 .. 999) {
+        my $num = sprintf("$base%d", $dec);
+        my $rounded = roundcommon(1e-4, $num);
+        $are_equal = $rounded eq '178568.0047';
+        ok($are_equal, "$num rounded correctly: $rounded");
+        last unless $are_equal;
     }
 };
 
