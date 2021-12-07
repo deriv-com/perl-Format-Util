@@ -341,17 +341,19 @@ sub _round_to_precison {
 
     die unless $decimal_places >= 0;
 
-    if ($decimal_places <= 6 # Smallest pip size value we have: 0.000001 for XRP
-        && length(int $val) + $decimal_places < 15 # In doubles we ca hold up to 15 digits
-    ) {
-        my $pow = 10 ** $decimal_places;
+    if (
+        $decimal_places <= 6                          # Smallest pip size value we have: 0.000001 for XRP
+        && length(int $val) + $decimal_places < 15    # In doubles we ca hold up to 15 digits
+        )
+    {
+        my $pow = 10**$decimal_places;
         my ($real, $fraction) = split /\./, ($val * $pow);
         if ($fraction && substr($fraction, 0, 1) >= 5) {
-            $real += $real > 0 ? 1 : -1; # Round away from zero
+            $real += $real > 0 ? 1 : -1;              # Round away from zero
         }
         my $rounded = $real / $pow;
-        my $format = "%." . $decimal_places . "f";
-        return sprintf($format, $rounded);    # No rounding occures here, only padding
+        my $format  = "%." . $decimal_places . "f";
+        return sprintf($format, $rounded);            # No rounding occures here, only padding
     }
 
     # For number that require more decimal_places use BigFloat. It's way slower
