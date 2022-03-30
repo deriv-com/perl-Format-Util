@@ -57,6 +57,7 @@ price:
   EUR: 2
   EURS: 2
   eUSDT: 2
+  LINK: 8
   FJD: 2
   FKP: 2
   GBP: 2
@@ -241,6 +242,7 @@ amount:
   EUR: 2
   EURS: 2
   eUSDT: 2
+  LINK: 8
   FJD: 2
   FKP: 2
   GBP: 2
