@@ -153,6 +153,7 @@ price:
   TMT: 2
   TND: 3
   TOP: 2
+  TRX: 6
   TRY: 2
   TTD: 2
   TUSD: 2
@@ -337,6 +338,7 @@ amount:
   TMT: 2
   TND: 3
   TOP: 2
+  TRX: 6
   TRY: 2
   TTD: 2
   TUSD: 2
