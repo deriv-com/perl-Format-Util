@@ -2,7 +2,7 @@ alias:
   - &install_dzil 
     run:
       command: |
-        cpm install -g --no-test Dist::Zilla Dist::Zilla::App::Command::cover ExtUtils::MakeMaker Devel::Cover::Report::Codecov
+        cpm install -g --no-test Dist::Zilla Dist::Zilla::App::Command::cover ExtUtils::MakeMaker
       name: Install Dzil
   - &install_author_deps
     run: 
