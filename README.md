@@ -1,92 +1,90 @@
-**Format::Util** - Miscellaneous routines to do with manipulating on Numbers and Strings
+# NAME
 
-[![Build Status](https://travis-ci.org/binary-com/perl-Format-Util.svg?branch=master)](https://travis-ci.org/binary-com/perl-Format-Util)
-[![codecov](https://codecov.io/gh/binary-com/perl-Format-Util/branch/master/graph/badge.svg)](https://codecov.io/gh/binary-com/perl-Format-Util)
-[![Gitter chat](https://badges.gitter.im/binary-com/perl-Format-Util.png)](https://gitter.im/binary-com/perl-Format-Util)
+Format::Util - Miscellaneous routines to do with manipulating with strings and numbers!
 
+# SYNOPSIS
 
-**SYNOPSIS**
+Quick summary of what the module does.
 
-    use Format::Util::Strings qw( defang defang_lite set_selected_item )
-    use Format::Util::Numbers qw( commas to_monetary_number_format roundnear )
+Perhaps a little code snippet.
 
-**METHODS**
+    use Format::Util::Numbers;
+    use Format::Util::Strings;
 
+    ...
 
-- **defang($string)**
+# AUTHOR
 
-    Removes potentially dangerous characters from input strings.
+binary.com, `<rakesh at binary.com>`
 
-    You should probably be using Untaint.
+# BUGS
 
-- **defang_lite($string)**
+Please report any bugs or feature requests to `bug-format-util at rt.cpan.org`, or through
+the web interface at [http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Format-Util](http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Format-Util).  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
 
-    Removes potentially dangerous characters from input strings.
-
-    You should probably be using Untaint.
-
-    defang_lite is a lighter version that is not so restrictive as defang
-
-- **set_selected_item($selecteditem,$optionlist)**
-
-    Sets the selected item in an <option> list.
-
-    Params  :
-
-    - $selecteditem : the value of the item (usually taken from %input)
-
-    - $optionlist : The option list, as either an HTML string or a hash ref.
-
-    Returns : If hash ref given, 1 if selected item is set, false otherwise
-
-    If HTML given, the altered HTML
-
-- **commas($number, $decimal_point)**
-
-    Produce a more human readbale number with a provided number of decimal points
-
-    commas(12345.679, 1) => 12,345.7
-
-- **to_monetary_number_format($number,$remove_decimal_for_ints)**
-
-    Produce a nice human readable number which looks like a currency
-
-    to_monetary_number_format(123456789) => 123,456,789.00
-
-- **roundnear($target, $input)**
-
-    Round a number near the precision of the supplied one.
-
-    roundnear( 0.01, 12345.678) => 12345.68
-
-
-**AUTHOR**
-
-binary.com, C<< <rakesh at binary.com> >>
-
-**SUPPORT**
+# SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Math::Util::CalculatedValue
-
+    perldoc Format::Util
 
 You can also look for information at:
 
+- RT: CPAN's request tracker (report bugs here)
 
-RT: CPAN's request tracker (report bugs here)
+    [http://rt.cpan.org/NoAuth/Bugs.html?Dist=Format-Util](http://rt.cpan.org/NoAuth/Bugs.html?Dist=Format-Util)
 
-<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Format-Util>
+- AnnoCPAN: Annotated CPAN documentation
 
-AnnoCPAN: Annotated CPAN documentation
+    [http://annocpan.org/dist/Format-Util](http://annocpan.org/dist/Format-Util)
 
-<http://annocpan.org/dist/Format-Util>
+- CPAN Ratings
 
-CPAN Ratings
+    [http://cpanratings.perl.org/d/Format-Util](http://cpanratings.perl.org/d/Format-Util)
 
-<http://cpanratings.perl.org/d/Format-Util>
+- Search CPAN
 
-Search CPAN
+    [http://search.cpan.org/dist/Format-Util/](http://search.cpan.org/dist/Format-Util/)
 
-<http://search.cpan.org/dist/Format-Util/>
+# ACKNOWLEDGEMENTS
 
+# LICENSE AND COPYRIGHT
+
+Copyright 2014 binary.com.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+[http://www.perlfoundation.org/artistic\_license\_2\_0](http://www.perlfoundation.org/artistic_license_2_0)
+
+Any use, modification, and distribution of the Standard or Modified
+Versions is governed by this Artistic License. By using, modifying or
+distributing the Package, you accept this license. Do not use, modify,
+or distribute the Package, if you do not accept this license.
+
+If your Modified Version has been derived from a Modified Version made
+by someone other than you, you are nevertheless required to ensure that
+your Modified Version complies with the requirements of this license.
+
+This license does not grant you the right to use any trademark, service
+mark, tradename, or logo of the Copyright Holder.
+
+This license includes the non-exclusive, worldwide, free-of-charge
+patent license to make, have made, use, offer to sell, sell, import and
+otherwise transfer the Package with respect to any patent claims
+licensable by the Copyright Holder that are necessarily infringed by the
+Package. If you institute patent litigation (including a cross-claim or
+counterclaim) against any party alleging that the Package constitutes
+direct or contributory patent infringement, then this Artistic License
+to you shall terminate on the date that such litigation is filed.
+
+Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
+AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
+THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
+YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
+CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
+CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
