@@ -9,7 +9,7 @@ our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon finan
 
 use Carp qw(cluck);
 use Scalar::Util qw(looks_like_number);
-use POSIX qw(ceil);
+use POSIX qw(ceil floor);
 use YAML::XS;
 use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
@@ -72,7 +72,6 @@ Round a number near the precision of the supplied one.
 # TYPE:
 #   CURRENCY: PRECISION
 my $precisions = YAML::XS::LoadFile($ENV{FORMAT_UTIL_PRECISION} // File::ShareDir::dist_file('Format-Util', 'precision.yml'));
-my $floating_point_regex = qr/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
 
 =head2 commas
 
@@ -180,12 +179,9 @@ sub formatnumber {
 
     # return val if any one of value, currency or type is invalid
     return $val
-        if ((
-            not defined $val
-            or $val !~ $floating_point_regex
-        )
-        or not defined $precisions->{$type // 'unknown-type'}
-        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
+        if not looks_like_number($val)
+            or not defined $precisions->{$type // 'unknown-type'}
+            or not defined $precisions->{$type}->{$currency // 'unknown-type'};
 
     return sprintf('%0.0' . $precisions->{$type}->{$currency} . 'f', $val);
 }
@@ -222,14 +218,11 @@ sub financialrounding {
 
     # return val if any one of value, currency or type is invalid
     return $val
-        if ((
-            not defined $val
-            or $val !~ $floating_point_regex
-        )
+        if not looks_like_number($val)
         or not defined $precisions->{$type // 'unknown-type'}
-        or not defined $precisions->{$type}->{$currency // 'unknown-type'});
+        or not defined $precisions->{$type}->{$currency // 'unknown-type'};
 
-    return _round_to_precison($precisions->{$type}->{$currency}, $val);
+    return _round_to_precision($precisions->{$type}->{$currency}, $val);
 }
 
 =head2 roundcommon
@@ -267,16 +260,15 @@ sub roundcommon {
     my ($precision, $val) = @_;
 
     return $val
-        if ((
-            not defined $val
-            or $val !~ $floating_point_regex
-        )
-        or (not defined $precision or $precision !~ /^(?:1(?:[eE][-]?[0-9]+)?|0(?:\.0*1)?)$/ or $precision == 0));
+        if not looks_like_number($val)
+            or not looks_like_number($precision)
+            or $precision <= 0
+            or $precision > 1;
 
     # get the number of decimal places needed by BigFloat
-    $precision = log(1 / $precision) / log(10);
+    $precision = floor(0.5 + log(1 / $precision) / log(10));
 
-    return _round_to_precison($precision, $val);
+    return _round_to_precision($precision, $val);
 }
 
 =head2 get_precision_config
@@ -314,11 +306,11 @@ sub get_min_unit {
 }
 
 # common sub used by roundcommon and financialrounding
-sub _round_to_precison {
+sub _round_to_precision {
     my ($precision, $val) = @_;
 
     my $x = Math::BigFloat->bzero();
-    $x->badd($val)->bfround('-' . $precision, 'common');
+    $x->badd($val)->bfround(-$precision, 'common');
 
     return $x->bstr();
 }

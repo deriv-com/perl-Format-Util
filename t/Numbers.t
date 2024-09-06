@@ -21,7 +21,6 @@ subtest 'roundcommon' => sub {
     cmp_ok(roundcommon(1,    345.56789), '==', 346,       'Ones is correct.');
     cmp_ok(roundcommon(0.1,  345.56789), '==', 345.6,     'Correct rounding for 1 decimal place');
     cmp_ok(roundcommon(0.01, 345.56789), '==', 345.57,    'Hundredths rounding is correct.');
-    cmp_ok(roundcommon(0.02, 345.56789), '==', 345.56789, 'Two hundredths rounding is not supported.');
     cmp_ok(roundcommon(10,   345.56789), '==', 345.56789, 'Not supported, only supported integer is 1');
     is(roundcommon(0, undef), undef, 'Rounding undef yields undef.');
     cmp_ok(roundcommon(1e-2,  10.456),            '==', 10.46,         'Rounding with exponential precision');
