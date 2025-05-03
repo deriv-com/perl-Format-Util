@@ -9,7 +9,7 @@ our @EXPORT_OK = qw/commas to_monetary_number_format roundnear roundcommon finan
 
 use Carp qw(cluck);
 use Scalar::Util qw(looks_like_number);
-use POSIX qw(ceil);
+use POSIX qw(ceil log10);
 use YAML::XS;
 use File::ShareDir;
 use Math::BigFloat lib => 'Calc';
@@ -31,19 +31,22 @@ Format::Util::Numbers - Miscellaneous routines to do with manipulating number fo
 
 =head2 roundnear
 
-Round a number near the precision of the supplied one.
+(DEPRECATED) Round a number near the precision of the supplied one.
 
     roundnear( 0.01, 12345.678) => 12345.68
 
 =cut
 
 {
-    #cf. Math::Round
+    # cf. Math::Round
+    # https://github.com/psipred/MemSatSVM/blob/master/lib/Math/Round.pm
     my $halfdec = do {
         my $halfhex = unpack('H*', pack('d', 0.5));
         if (substr($halfhex, 0, 2) ne '00' && substr($halfhex, -2) eq '00') {
+            #--- It's big-endian.
             substr($halfhex, -4) = '1000';
         } else {
+            #--- It's little-endian.
             substr($halfhex, 0, 4) = '0010';
         }
         unpack('d', pack('H*', $halfhex));
@@ -71,7 +74,7 @@ Round a number near the precision of the supplied one.
 # format of precsion should be
 # TYPE:
 #   CURRENCY: PRECISION
-my $precisions = YAML::XS::LoadFile($ENV{FORMAT_UTIL_PRECISION} // File::ShareDir::dist_file('Format-Util', 'precision.yml'));
+my $precisions           = YAML::XS::LoadFile($ENV{FORMAT_UTIL_PRECISION} // File::ShareDir::dist_file('Format-Util', 'precision.yml'));
 my $floating_point_regex = qr/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
 
 =head2 commas
@@ -274,9 +277,9 @@ sub roundcommon {
         or (not defined $precision or $precision !~ /^(?:1(?:[eE][-]?[0-9]+)?|0(?:\.0*1)?)$/ or $precision == 0));
 
     # get the number of decimal places needed by BigFloat
-    $precision = log(1 / $precision) / log(10);
+    my $decimal_places = log10(1 / $precision);
 
-    return _round_to_precison($precision, $val);
+    return _round_to_precison($decimal_places, $val);
 }
 
 =head2 get_precision_config
@@ -313,12 +316,49 @@ sub get_min_unit {
     return formatnumber('price', $currency, 1 / 10**($precisions->{price}->{$currency}));
 }
 
-# common sub used by roundcommon and financialrounding
-sub _round_to_precison {
-    my ($precision, $val) = @_;
+=head2 _round_to_precison
 
+Rounds the given value up to C<decimal_places>
+For smaller values that fit into C<double> type,
+we'll calculate the rounded value here.
+L<Math::BigFloat> is used for bigger values.
+Numbers are rounded away from zero
+
+=over 4
+
+=item * C<decimal_places> Precsion for rounding
+
+=item * C<val> Value to round
+
+=back
+
+Returns pip sized string for the value
+
+=cut
+
+sub _round_to_precison {
+    my ($decimal_places, $val) = @_;
+
+    die unless $decimal_places >= 0;
+
+    if (
+        $decimal_places <= 6                          # Smallest pip size value we have: 0.000001 for XRP
+        && length(int $val) + $decimal_places < 15    # In doubles we ca hold up to 15 digits
+        )
+    {
+        my $pow = 10**$decimal_places;
+        my ($real, $fraction) = split /\./, ($val * $pow);
+        if ($fraction && substr($fraction, 0, 1) >= 5) {
+            $real += $real > 0 ? 1 : -1;              # Round away from zero
+        }
+        my $rounded = $real / $pow;
+        my $format  = "%." . $decimal_places . "f";
+        return sprintf($format, $rounded);            # No rounding occures here, only padding
+    }
+
+    # For number that require more decimal_places use BigFloat. It's way slower
     my $x = Math::BigFloat->bzero();
-    $x->badd($val)->bfround('-' . $precision, 'common');
+    $x->badd($val)->bfround('-' . $decimal_places, 'common');
 
     return $x->bstr();
 }
